@@ -75,7 +75,7 @@
     </div>
   </header>
 </template>
-<script>
+<script setup>
 import Cancel from '@/icons/cancel.vue'
 import Cart from '@/icons/cart.vue'
 import Heart from '@/icons/heart.vue'
@@ -84,25 +84,33 @@ import Mallbag from '@/icons/mallbag.vue'
 import Star from '@/icons/star.vue'
 import User from '@/icons/user.vue'
 import { mapActions, mapGetters } from 'vuex'
+import { useWishlistStore } from '@/stores/wishlist'
+import { useCartStore } from '@/stores/cart'
+import { ref, computed  } from 'vue'
 
-export default {
-  components: {
-    Heart,
-    Cart,
-    User,
-    Mallbag,
-    Cancel,
-    Star,
-    Logout,
-  },
-  computed: {
-    ...mapGetters('wishlist', {
-      wishlist: 'getWishlist',
-    }),
-    ...mapGetters('cart', {
-      cart: 'getCart',
-    }),
-  },
-}
+const wishlistStore = useWishlistStore()
+const cartStore = useCartStore()
+const wishlist = computed(() => wishlistStore.getWishlist)
+const cart = computed(() => cartStore.getCart)  
+
+// export default {
+//   components: {
+//     Heart,
+//     Cart,
+//     User,
+//     Mallbag,
+//     Cancel,
+//     Star,
+//     Logout,
+//   },
+//   computed: {
+//     ...mapGetters('wishlist', {
+//       wishlist: 'getWishlist',
+//     }),
+//     ...mapGetters('cart', {
+//       cart: 'getCart',
+//     }),
+//   },
+// }
 </script>
 <style lang=""></style>

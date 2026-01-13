@@ -47,33 +47,51 @@
     </div>
   </div>
 </template>
-<script>
-import { mapGetters, mapActions } from 'vuex'
+<script setup>
+// import { mapGetters, mapActions } from 'vuex'
 import Cart from '@/icons/cart.vue'
 import Delete from '@/icons/delete.vue'
 import StarRating from '@/components/StarRating.vue'
-export default {
-  components: { StarRating, Cart, Delete },
-  computed: {
-    ...mapGetters('wishlist', {
-      wishlist: 'getWishlist',
-    }),
-  },
-  methods: {
-    ...mapActions('wishlist', ['deleteProduct']),
-    deleteItem(id) {
-      this.deleteProduct(id)
-    },
-    ...mapActions('cart', ['addToCart']),
-    addItemToCart(item) {
-      this.addToCart(item)
-      this.deleteProduct(item.id)
-    },
-    ...mapActions('wishlist', ['moveItemsToCart']),
-    moveAll() {
-      this.moveItemsToCart()
-    },
-  },
+import { useWishlistStore } from '@/stores/wishlist'
+import { useCartStore } from '@/stores/cart'
+import { computed } from 'vue'
+
+const wishlistStore = useWishlistStore()
+const cartStore = useCartStore()
+
+
+const wishlist = computed(() => wishlistStore.getWishlist)
+const deleteItem = (id) =>  wishlistStore.removeFromWishlist(id)
+const addItemToCart = (item) => {
+  cartStore.addToCartAction(item)
+  wishlistStore.removeFromWishlist(item.id)
 }
+const moveAll = computed(() => {
+  wishlistStore.moveItemsToCart(cartStore)
+})
+
+// export default {
+//   components: { StarRating, Cart, Delete },
+//   computed: {
+//     ...mapGetters('wishlist', {
+//       wishlist: 'getWishlist',
+//     }),
+//   },
+//   methods: {
+//     ...mapActions('wishlist', ['deleteProduct']),
+//     deleteItem(id) {
+//       this.deleteProduct(id)
+//     },
+//     ...mapActions('cart', ['addToCart']),
+//     addItemToCart(item) {
+//       this.addToCart(item)
+//       this.deleteProduct(item.id)
+//     },
+//     ...mapActions('wishlist', ['moveItemsToCart']),
+//     moveAll() {
+//       this.moveItemsToCart()
+//     },
+//   },
+// }
 </script>
 <style lang=""></style>

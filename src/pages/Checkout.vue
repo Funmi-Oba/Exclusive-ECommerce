@@ -66,27 +66,40 @@
     </div>
   </div>
 </template>
-<script>
+<script setup>
 import RedButton from '@/components/RedButton.vue'
-import { mapGetters } from 'vuex'
-export default {
-  components: {
-    RedButton,
-  },
-  computed: {
-    ...mapGetters('cart', {
-      cart: 'getCart',
-      grandTotal: 'getCartSubTotal',
-    }),
-  },
-  methods: {
-    formatMoney(value) {
-      return new Intl.NumberFormat('en-US', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      }).format(value)
-    },
-  },
+import { useCartStore } from '@/stores/cart'
+import { computed } from 'vue'
+
+const cartStore = useCartStore()
+
+const cart = computed(() => cartStore.getCart)
+const grandTotal = computed(() => cartStore.getCartSubTotal)
+
+const formatMoney = (value) => {
+  return new Intl.NumberFormat('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(value)
 }
+// export default {
+//   components: {
+//     RedButton,
+//   },
+//   computed: {
+//     ...mapGetters('cart', {
+//       cart: 'getCart',
+//       grandTotal: 'getCartSubTotal',
+//     }),
+//   },
+//   methods: {
+//     formatMoney(value) {
+//       return new Intl.NumberFormat('en-US', {
+//         minimumFractionDigits: 2,
+//         maximumFractionDigits: 2,
+//       }).format(value)
+//     },
+//   },
+// }
 </script>
 <style lang=""></style>

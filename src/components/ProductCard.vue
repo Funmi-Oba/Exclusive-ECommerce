@@ -5,7 +5,7 @@
         <span class="flex items-center px-2 text-xs text-white bg-[#DB4444] rounded">-30%</span>
         <button class="p-2 bg-white rounded-full">
           <Heart
-            @click="toggleWishlist"
+            @click="toggleWishlist()"
             class="cursor-pointer"
             :class="isInWishlist ? 'text-black fill-red-500' : 'text-black'"
           />
@@ -14,10 +14,19 @@
       <div class="relative h-40 w-52">
         <img :src="product.image" alt="" class="object-contain w-full h-40 mt-3" />
         <button
+          v-if="!isInCart"
           @click="toggleCart"
           class="absolute bottom-0 flex items-center justify-center w-full py-2 text-white opacity-0 bg-black/70 hover:opacity-100 rounded-b-md group-hover:opacity-100"
         >
           Add to Cart
+        </button>
+        <button
+          v-if="isInCart"
+          type="button"
+          disabled
+          class="absolute bottom-0 flex items-center justify-center w-full py-2 text-green-400 bg-black/70 hover:opacity-100 rounded-b-md group-hover:opacity-100"
+        >
+          Added to Cart
         </button>
       </div>
     </div>
@@ -33,33 +42,57 @@
     </div>
   </div>
 </template>
-<script>
+<script setup>
 import Heart from '@/icons/heart.vue'
 import StarRating from './StarRating.vue'
 import { mapActions, mapGetters } from 'vuex'
-export default {
-  components: {
-    Heart,
-    StarRating,
-  },
-  props: ['product'],
-  computed: {
-    ...mapGetters('wishlist', ['getWishlistItem']),
-    ...mapGetters('cart', ['getCart']),
-    isInWishlist() {
-      return !!this.getWishlistItem(this.product.id)
-    },
-  },
-  methods: {
-    ...mapActions('wishlist', ['updateWishlist']),
-    toggleWishlist() {
-      this.updateWishlist(this.product)
-    },
-    ...mapActions('cart', ['addToCart']),
-    toggleCart() {
-      this.addToCart(this.product)
-    },
-  },
+import { useWishlistStore } from '@/stores/wishlist'
+import { useCartStore } from '@/stores/cart'
+import { ref, computed } from 'vue'
+
+const wishlistStore = useWishlistStore()
+const cartStore = useCartStore()
+
+
+const props = defineProps(['product'])
+const isInWishlist = computed(() => {
+  return !!wishlistStore.getWishlistItemById(props.product.id)
+})
+const toggleWishlist = () => {
+  wishlistStore.updateWishlist(props.product)
 }
+const toggleCart = () => {
+  cartStore.addToCartAction(props.product)
+ 
+ 
+}
+const isInCart = computed(() => {
+  return !!cartStore.getCartItemById(props.product.id)
+})
+
+// export default {
+//   components: {
+//     Heart,
+//     StarRating,
+//   },
+//   props: ['product'],
+//   computed: {
+//     ...mapGetters('wishlist', ['getWishlistItem']),
+//     ...mapGetters('cart', ['getCart']),
+//     isInWishlist() {
+//       return !!this.getWishlistItem(this.product.id)
+//     },
+//   },
+//   methods: {
+//     ...mapActions('wishlist', ['updateWishlist']),
+//     toggleWishlist() {
+//       this.updateWishlist(this.product)
+//     },
+//     ...mapActions('cart', ['addToCart']),
+//     toggleCart() {
+//       this.addToCart(this.product)
+//     },
+//   },
+// }
 </script>
 <style lang=""></style>

@@ -93,32 +93,50 @@
     </div>
   </div>
 </template>
-<script>
+<script setup>
 import RedButton from '@/components/RedButton.vue'
-import { mapGetters, mapActions } from 'vuex'
-export default {
-  components: {
-    RedButton,
-  },
-  computed: {
-    ...mapGetters('cart', {
-      cart: 'getCart',
-      grandTotal: 'getCartSubTotal',
-    }),
-  },
-  methods: {
-    formatMoney(value) {
-      return new Intl.NumberFormat('en-US', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      }).format(value)
-    },
-    ...mapActions('cart', ['deleteFromCart']),
-    deleteItem(id) {
-      this.deleteFromCart(id)
-    },
-  },
+import { useCartStore } from '@/stores/cart'
+import { computed } from 'vue'
+const cartStore = useCartStore()
+const cart = computed(() => cartStore.getCart)
+const grandTotal = computed(() => cartStore.getCartSubTotal)
+const formatMoney = (value) => {
+  return new Intl.NumberFormat('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(value)
 }
+const deleteItem = (id) => {
+  cartStore.deleteFromCart(id)
+}
+
+
+
+
+// import { mapGetters, mapActions } from 'vuex'
+// export default {
+//   components: {
+//     RedButton,
+//   },
+//   computed: {
+//     ...mapGetters('cart', {
+//       cart: 'getCart',
+//       grandTotal: 'getCartSubTotal',
+//     }),
+//   },
+//   methods: {
+//     formatMoney(value) {
+//       return new Intl.NumberFormat('en-US', {
+//         minimumFractionDigits: 2,
+//         maximumFractionDigits: 2,
+//       }).format(value)
+//     },
+//     ...mapActions('cart', ['deleteFromCart']),
+//     deleteItem(id) {
+//       this.deleteFromCart(id)
+//     },
+//   },
+// }
 </script>
 <style>
 input[type='number'] {
